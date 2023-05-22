@@ -1,10 +1,14 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 import { Gallery } from './js/api';
 import { refs } from './js/refs';
 import { messages } from './js/notify';
 import { loadMoreBtn } from './js/btnLoadMore';
+import { svgImgs } from './js/svg';
 
 const { notifyFailure, notifyInfo, notifySuccess } = messages;
-const { searchFormEL, galleryContainerEl, loadBtnEl } = refs;
+const { searchFormEL, galleryContainerEl, loadBtnEl, scrollTopBtnEl } = refs;
 
 const gallery = new Gallery();
 const loadMore = new loadMoreBtn({ btnEl: loadBtnEl, isHidden: true });
@@ -25,7 +29,8 @@ const checkRequest = async searchValue => {
     const data = await gallery.requestImgsFromServer(searchValue);
     const imgsArray = await getImgs(data.hits);
 
-    if (!imgsArray.length) {
+    if (!imgsArray.length || !gallery.searchValue) {
+      loadMore.hideBtn();
       throw new Error();
     }
     if (gallery.totalPhotos === data.total) {
@@ -39,50 +44,14 @@ const checkRequest = async searchValue => {
     }
 
     renderGalleryMarkup(imgsArray);
+
+    let lightbox = new SimpleLightbox('.gallery a', {});
+    lightbox.refresh();
+
     loadMore.enableBtn();
   } catch {
     notifyFailure();
   }
-};
-
-const createMarkup = ({
-  webformatURL,
-  tags,
-  likes,
-  views,
-  comments,
-  downloads,
-}) => {
-  return `<div class="photo-card">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
-  <div class="info">
-    <p class="info-item">
-      <b>Likes ${likes}</b>
-    </p>
-    <p class="info-item">
-      <b>Views ${views}</b>
-    </p>
-    <p class="info-item">
-      <b>Comments ${comments}</b>
-    </p>
-    <p class="info-item">
-      <b>Downloads ${downloads}</b>
-    </p>
-  </div>
-</div>`;
-};
-
-const renderGalleryMarkup = data => {
-  const galleryMarkup = data.reduce(
-    (markup, img) => markup + createMarkup(img),
-    ''
-  );
-
-  galleryContainerEl.insertAdjacentHTML('beforeend', galleryMarkup);
-};
-
-const clearHTML = () => {
-  galleryContainerEl.innerHTML = '';
 };
 
 const getImgs = arr => {
@@ -99,11 +68,69 @@ const getImgs = arr => {
   });
 };
 
+const renderGalleryMarkup = data => {
+  const galleryMarkup = data.reduce(
+    (markup, img) => markup + createMarkup(img),
+    ''
+  );
+
+  galleryContainerEl.insertAdjacentHTML('beforeend', galleryMarkup);
+};
+
+const createMarkup = ({
+  webformatURL,
+  largeImageURL,
+  tags,
+  likes,
+  views,
+  comments,
+  downloads,
+}) => {
+  return `<div class="photo-card">
+  <a href="${largeImageURL}"
+    ><img src="${webformatURL}" alt="${tags}" loading="lazy"
+  /></a>
+  <div class="info">
+    <p class="info-item">
+      <img src="${svgImgs.likes}" alt="" />
+      <p> ${likes}</p>
+    </p>
+    <p class="info-item">
+      <img src="${svgImgs.views}" alt="" />
+
+      <p> ${views.toLocaleString()}</p>
+    </p>
+    <p class="info-item">
+      <img src="${svgImgs.comments}" alt="" />
+      <p> ${comments}</p>
+    </p>
+    <p class="info-item">
+      <img src="${svgImgs.downloads}" alt="" />
+      <p> ${downloads.toLocaleString()}</p>
+    </p>
+  </div>
+</div>`;
+};
+
+const clearHTML = () => {
+  galleryContainerEl.innerHTML = '';
+};
+
 const loadMoreImgs = () => {
   const searchValue = gallery.searchValue;
   gallery.incrPage();
   checkRequest(searchValue);
 };
+
+scrollTopBtnEl.classList.add('hidden');
+
+function handleScroll() {
+  if (window.pageYOffset > 0) {
+    scrollTopBtnEl.classList.remove('hidden');
+  } else {
+    scrollTopBtnEl.classList.add('hidden');
+  }
+}
 
 searchFormEL.addEventListener('submit', evt => {
   evt.preventDefault();
@@ -111,3 +138,11 @@ searchFormEL.addEventListener('submit', evt => {
 });
 
 loadBtnEl.addEventListener('click', loadMoreImgs);
+
+window.addEventListener('scroll', handleScroll);
+
+scrollTopBtnEl.addEventListener('click', evt => {
+  window.scrollTo({
+    top: 0,
+  });
+});

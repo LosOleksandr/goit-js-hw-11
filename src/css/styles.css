@@ -1,36 +1,132 @@
+
+
+
 body {
   width: 100%;
-  height: 100vh;
+  height: 100%;
 }
 
-.gallery {
+.form-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 50px 15px 0 15px;
+}
+.search-form {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
+}
+.search-input {
+  width: 200px;
+  padding: 8px 5px 8px 10px;
+  border-radius: 25px;
+  transition: border-radius 1s cubic-bezier(0, 0, 0.43, 1.49);
+}
+
+.search-input:focus {
+  outline: none;
+  border: rgb(8, 161, 8) solid 2px;
+}
+
+.search-input:not(:placeholder-shown) {
+  border-radius: 25px 0 0 25px;
+}
+
+.search-input:not(:placeholder-shown) + .search-btn {
+  visibility: visible;
+  opacity: 1;
+}
+.search-btn {
+  visibility: hidden;
+  opacity: 0;
+  padding: 8px 27px 8px 25px;
+  height: 35px;
+  border-radius: 0 25px 25px 0;
+  background-color: rgb(8, 161, 8);
+  transition: all 0.7s cubic-bezier(0, 0, 0.43, 1.49);
+}
+
+.search-btn:hover {
+  background-color: rgb(11, 117, 11);
+}
+.search-btn img {
+  width: 10px;
+}
+.gallery {
+  margin-top: 40px;
+  padding: 0 15px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  justify-content: center;
   gap: 15px;
 }
 
-.photo-card img {
-  width: 450px;
+.gallery img {
+  max-width: 100%;
   height: 300px;
+  object-fit: cover;
 }
+
+.photo-card {
+  box-shadow: 1px 5px 5px 0px rgba(0, 0, 0, 0.12);
+}
+
+.info-item img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.info {
+  padding: 15px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
 .load-more {
+  margin: 20px auto;
+  padding: 15px 40px;
+  border-radius: 25px;
+  border: #000 solid 2px;
+  background-color: rgb(8, 161, 8);
+  text-transform: uppercase;
+  color: aliceblue;
+  transition: all 0.7s cubic-bezier(0, 0, 0.43, 1.49);
+}
+
+.load-more:hover {
+  background-color: rgb(11, 117, 11);
+}
+
+.load-more:disabled {
+  background-color: grey;
+}
+.load-more:disabled:hover {
+  background-color: grey;
+  cursor: not-allowed;
+}
+
+#scroll-top {
+  position: fixed;
+  bottom: 20px;
+  right: 40px;
+  background-color: transparent;
+  color: rgb(8, 161, 8);
+  border: rgb(8, 161, 8) solid 2px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  padding-top: 10px;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+#scroll-top:hover {
+  color: rgb(11, 117, 11);
+  border: rgb(11, 117, 11) solid 2px;
 }
 
 .hidden {
   display: none;
-}
-
-.search-form{
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  padding-top: 40px;
-}
-
-.search-input{
-  height: 30px;
-}
-.search-btn{
-  background-color: transparent;
 }

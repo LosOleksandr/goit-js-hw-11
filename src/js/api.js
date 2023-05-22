@@ -18,7 +18,7 @@ class Gallery {
       orientation: 'horizontal',
       safesearch: true,
       page: this.page,
-      per_page: 4,
+      per_page: 40,
     });
   }
 
