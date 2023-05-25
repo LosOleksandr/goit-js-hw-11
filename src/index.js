@@ -1,8 +1,8 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-import { Gallery } from './js/api';
 import { refs } from './js/refs';
+import { Gallery } from './js/api';
 import { messages } from './js/notify';
 import { loadMoreBtn } from './js/btnLoadMore';
 import { svgImgs } from './js/svg';
